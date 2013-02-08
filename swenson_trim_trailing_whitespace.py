@@ -20,6 +20,15 @@ class SwensonTrimTrailingWhiteSpace(sublime_plugin.EventListener):
     snapshots[view.id()] = view.substr(sublime.Region(0, view.size()))
 
   def on_pre_save(self, view):
+    # Trim all whitespace on my files.
+    if any(view.find(pattern, 0, sublime.IGNORECASE) for pattern in patterns):
+      view.run_command("erase_whitespace", {})
+      return
+
+    if view.id() not in snapshots:
+      print("No snapshot present to compare")
+      return
+
     # Trim whitespace on any new files.
     old = snapshots[view.id()].split('\n')
     new = view.substr(sublime.Region(0, view.size())).split('\n')
@@ -27,27 +36,28 @@ class SwensonTrimTrailingWhiteSpace(sublime_plugin.EventListener):
     new_lines = set(range(len(new)))
     sm = SequenceMatcher(None, old, new)
     for i, j, n in sm.get_matching_blocks():
-      for k in xrange(j, j + n):
+      for k in range(j, j + n):
         new_lines.remove(k)
     # Trim the whitespace on the new lines:
     if new_lines:
-      edit = view.begin_edit()
-      for line_no in new_lines:
-        pt = view.text_point(line_no, 0)
-        old_line = view.line(pt)
-        new_line_text = view.substr(view.line(pt)).rstrip()
-        view.replace(edit, old_line, new_line_text)
-      view.end_edit(edit)
-
-    # Trim all whitespace on my files.
-    if any(view.find(pattern, 0, sublime.IGNORECASE) for pattern in patterns):
-      trailing_white_space = view.find_all("[\t ]+$")
-      trailing_white_space.reverse()
-      edit = view.begin_edit()
-      for r in trailing_white_space:
-          view.erase(edit, r)
-      view.end_edit(edit)
+      new_lines = ','.join(str(n) for n in new_lines)
+      view.run_command("process_new_lines", dict(new_lines=new_lines))
 
   # Reload the file into the snapshot after saving.
   def on_post_save(self, view):
     self.on_load(view)
+
+class EraseWhitespaceCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    trailing_white_space = self.view.find_all("[\t ]+$")
+    trailing_white_space.reverse()
+    for r in trailing_white_space:
+      self.view.erase(edit, r)
+
+class ProcessNewLinesCommand(sublime_plugin.TextCommand):
+  def run(self, edit, new_lines=""):
+    for line_no in new_lines.split(','):
+      pt = self.view.text_point(int(line_no), 0)
+      old_line = self.view.line(pt)
+      new_line_text = self.view.substr(self.view.line(pt)).rstrip()
+      self.view.replace(edit, old_line, new_line_text)
