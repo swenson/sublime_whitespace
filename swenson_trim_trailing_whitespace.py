@@ -11,7 +11,6 @@ from difflib import SequenceMatcher
 
 import sublime, sublime_plugin
 
-patterns = ['swenson@simple.com', 'chris@caswenson.com']
 snapshots = {}
 
 class SwensonTrimTrailingWhiteSpace(sublime_plugin.EventListener):
@@ -20,6 +19,9 @@ class SwensonTrimTrailingWhiteSpace(sublime_plugin.EventListener):
     snapshots[view.id()] = view.substr(sublime.Region(0, view.size()))
 
   def on_pre_save(self, view):
+    settings = sublime.load_settings('Preferences.sublime-settings')
+    patterns = settings.get("trim_if_present", [])
+
     # Trim all whitespace on my files.
     if any(view.find(pattern, 0, sublime.IGNORECASE) for pattern in patterns):
       view.run_command("erase_whitespace", {})

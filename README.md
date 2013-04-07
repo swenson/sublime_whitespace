@@ -1,13 +1,17 @@
 sublime_whitespace
 ==================
 
-Only trim trailing whitespace on new lines.
+Only trim trailing whitespace on lines that have been edited or are new.
 
-Or if the file contains my email address.
+If any string from the `trim_if_present` preferences key is present in a file,
+it will strip all white space instead.
+For example, I have:
+
+    	"trim_if_present": ["swenson@simple.com", "chris@caswenson.com"],
 
 The easiest way to install this: go to Tools -> New Plugin,
-copy the text below into that new plugin, add your email addresses
-to the `patterns` variable, and save it as whatever you want.
+copy the text from the Python file into that new plugin and save it as whatever
+you want.
 
 License
 -------
@@ -15,7 +19,7 @@ License
 All code in this repository, unless otherwise specified, is hereby
 licensed under the MIT Public License:
 
-Copyright (c) 2012 Christopher Swenson.
+Copyright (c) 2012-2013 Christopher Swenson.
 
  Permission is hereby granted, free of charge, to any person
  obtaining a copy of this software and associated documentation
