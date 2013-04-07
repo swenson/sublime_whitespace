@@ -1,8 +1,5 @@
-# Only strip trailing whitespace from modified lines.
-# (Unless I own the file.)
-#
-# I suggest you modify the patterns line below to include your own email
-# addresses.
+# Only strip trailing whitespace from modified lines, or if
+# anything from `trim_if_present` is present.
 #
 # Author: Christopher Swenson (chris@caswenson.com)
 

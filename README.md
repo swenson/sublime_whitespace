@@ -1,6 +1,8 @@
 sublime_whitespace
 ==================
 
+The `Whitespace Diff Trim` plug-in for Sublime Text 2 or 3.
+
 Only trim trailing whitespace on lines that have been edited or are new.
 
 If any string from the `trim_if_present` preferences key is present in a file,
@@ -9,9 +11,8 @@ For example, I have:
 
     	"trim_if_present": ["swenson@simple.com", "chris@caswenson.com"],
 
-The easiest way to install this: go to Tools -> New Plugin,
-copy the text from the Python file into that new plugin and save it as whatever
-you want.
+The easiest way to install this: use Package Control and install the
+`Whitespace Diff Trim` plug-in.
 
 License
 -------
